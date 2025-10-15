@@ -56,6 +56,23 @@ One‑click deploy:
 
 [![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/g4Joey/Take-a-leave/tree/main)
 
+## 🌱 Seeding and initial users
+
+On first deploy, you can seed users safely and idempotently:
+
+- Set `RUN_SEED_ON_DEPLOY=1` on the API service to run `setup_production_data` during deploy.
+- Optionally provide `SEED_USERS` as a JSON array of users to create/update (non-sensitive fields only). Passwords are only set on create.
+
+Example `SEED_USERS` snippet (do not commit real credentials):
+
+```json
+[
+  { "username": "manager1", "first_name": "Ato", "last_name": "Lastname", "email": "manager1@example.com", "role": "manager", "department": "IT", "password": "<set-at-deploy>" }
+]
+```
+
+You can also set `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_PASSWORD`, and HR admin vars (`HR_ADMIN_USERNAME`, `HR_ADMIN_PASSWORD`, etc.) for initial access.
+
 ## 🧱 Tech Stack
 
 - Backend: Django 5 + Django REST Framework
