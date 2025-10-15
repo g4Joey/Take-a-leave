@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# Node
+frontend/node_modules/
+frontend/.cache/
+frontend/build/
+
+# Docker artifacts
+*.tar
+*.tar.gz
+
+# OS/Editor
+.DS_Store
+Thumbs.db
+*.swp
+
+# Env files
+.env
+.env.*
