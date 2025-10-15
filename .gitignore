@@ -17,6 +17,7 @@ frontend/build/
 Thumbs.db
 *.swp
 
-# Env files
+# Env files (keep examples)
 .env
 .env.*
+!.env.example
