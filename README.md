@@ -1,47 +1,86 @@
-# Leave Request Management (Generic)
+# 🏖️ Leave Request Management (Generic)
 
-This is a generic, unbranded version of the Leave Request Management app.
-It includes only local development and DigitalOcean deployment assets.
+Streamlined leave requests, approvals, and tracking with a clean Django backend and a modern frontend, packaged for local development and DigitalOcean App Platform.
 
-## Quick start (local)
+## 🌟 Features
 
-```bash
-# 1) Create virtualenv (optional) and install dependencies
+- 📝 Submit and track leave requests
+- ✅ Manager approval workflow
+- 📊 Dashboard and leave balance tracking
+- 🔔 Notifications and status updates
+- 🔒 JWT authentication and role-based access
+- 🗄️ MySQL for production; SQLite-friendly for local dev
+
+## 🚀 Quick Start (Local)
+
+```cmd
 python -m venv .venv
-. .venv/Scripts/activate  # on Windows
+.venv\Scripts\activate
 pip install -r requirements.txt
-
-# 2) Run database migrations and start server
 python manage.py migrate
 python manage.py runserver
 ```
 
-## Docker (local)
+Local endpoints:
+- API: http://127.0.0.1:8000/api/
+- Admin: http://127.0.0.1:8000/admin/
 
-```bash
-# Build and run
-docker build -t leave-request-app:latest .
-# With compose (local)
+## 🐳 Docker (Local Only)
+
+```cmd
 docker compose up --build
 ```
 
-## DigitalOcean App Platform
+The Dockerfile is intended for local/dev workflows. Production on DigitalOcean uses source-based deploys.
 
-This repo is set up to deploy from source on DigitalOcean App Platform (no Dockerfile needed in production).
+## ☁️ DigitalOcean App Platform (Production)
 
-- The spec in `.do/app.yaml` defines:
-  - A Python service for the API at path `/api` running Gunicorn
-  - A static site for the frontend built from `frontend/` and served at `/`
-  - A pre-deploy job that runs `migrate` and `collectstatic`
+This repository deploys from source via `.do/app.yaml` (no Dockerfile build in production).
 
-Minimal steps on DO:
-1) Create an App from this repo. DO will detect `.do/app.yaml`.
+What’s included:
+- API service (Gunicorn) served under `/api`
+- Frontend static site from `frontend/` at `/`
+- Pre-deploy job to run `migrate` and `collectstatic`
+
+Minimal setup on DigitalOcean:
+1) Create an App from this repo (DO auto-detects `.do/app.yaml`).
 2) Add a Managed MySQL database and attach it to the `api` service.
-3) Configure env vars on the `api` service:
-   - DJANGO_SETTINGS_MODULE=leave_management.settings_production
-   - SECRET_KEY=your-production-secret
-   - DATABASE_URL=mysql://USER:PASS@HOST:3306/DBNAME (auto-set if attached)
-   - RUN_SEED_ON_DEPLOY=1 (optional on first deploy)
-4) Deploy. The API will be available under `/api` and the frontend at `/`.
+3) Set environment variables on the `api` service:
+  - `DJANGO_SETTINGS_MODULE=leave_management.settings_production`
+  - `SECRET_KEY=your-production-secret`
+  - `DATABASE_URL=mysql://USER:PASS@HOST:3306/DBNAME` (auto-provisioned when attached)
+  - `RUN_SEED_ON_DEPLOY=1` (optional on first deploy)
+4) Deploy. Frontend is served at `/` and the API at `/api`.
 
-Note: The Dockerfile remains for local/dev builds only.
+One‑click deploy:
+
+[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/g4Joey/Take-a-leave/tree/main)
+
+## 🧱 Tech Stack
+
+- Backend: Django 5 + Django REST Framework
+- Auth: JWT (Simple JWT)
+- Database: MySQL (production), SQLite (local)
+- Frontend: React + Tailwind (built to static `/frontend/build`)
+
+## 📁 Project Structure (Top-level)
+
+```
+generic_export/
+├── leave_management/   # Django project settings & URLs
+├── users/              # User accounts, roles
+├── leaves/             # Leave request domain
+├── notifications/      # Notification hooks
+├── frontend/           # Frontend source (built by DO)
+├── .do/app.yaml        # DigitalOcean App Platform spec
+├── Dockerfile          # Local/dev only
+├── docker-compose.yml  # Local/dev only
+└── README.md
+```
+
+## 🔐 Production Notes
+
+- Always use a strong `SECRET_KEY` and set `DEBUG=False` in production.
+- Attach a Managed MySQL database and enforce SSL.
+- Update `ALLOWED_HOSTS` and CSRF settings to match your DO domains.
+
