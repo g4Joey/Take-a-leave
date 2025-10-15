@@ -1,0 +1,57 @@
+spec:
+  name: leave-request-management
+  services:
+    - name: api
+      environment_slug: python
+      instance_count: 1
+      instance_size_slug: basic-xxs
+      source_dir: .
+      routes:
+        - path: /api
+      run_command: gunicorn leave_management.wsgi:application --bind 0.0.0.0:$PORT
+      envs:
+        - key: DJANGO_SETTINGS_MODULE
+          value: leave_management.settings_production
+        - key: PYTHONUNBUFFERED
+          value: "1"
+        # Optional: seed initial users on first deploy
+        - key: RUN_SEED_ON_DEPLOY
+          value: "0"
+          scope: RUN_TIME
+          type: GENERAL
+
+  static_sites:
+    - name: frontend
+      source_dir: frontend
+      environment_slug: node-js
+      build_command: npm ci && npm run build
+      output_dir: build
+      routes:
+        - path: /
+      envs:
+        # Frontend can call the backend via relative /api path
+        - key: REACT_APP_API_BASE_URL
+          value: /api
+
+  jobs:
+    - name: migrate-and-collectstatic
+      kind: PRE_DEPLOY
+      environment_slug: python
+      source_dir: .
+      run_command: python manage.py migrate --noinput && python manage.py collectstatic --noinput
+      envs:
+        - key: DJANGO_SETTINGS_MODULE
+          value: leave_management.settings_production
+        - key: PYTHONUNBUFFERED
+          value: "1"
+        # Same optional seed flag honored by manage.py commands if used in your flows
+        - key: RUN_SEED_ON_DEPLOY
+          value: "0"
+          scope: RUN_TIME
+          type: GENERAL
+
+  alerts:
+    - rule: DEPLOYMENT_FAILED
+    - rule: DOMAIN_FAILED
+    - rule: CPU_UTILIZATION
+    - rule: MEMORY_UTILIZATION
