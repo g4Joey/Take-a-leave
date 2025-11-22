@@ -54,6 +54,8 @@ Minimal setup on DigitalOcean:
 
 One‑click deploy:
 
+[![Deploy on Hostinger](https://assets.hostinger.com/vps/deploy.svg)](https://www.hostinger.com/vps/docker-hosting?compose_url=https://github.com/g4Joey/Take-a-leave/)
+
 [![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/g4Joey/Take-a-leave/tree/main)
 
 ## 🌱 Seeding and initial users
